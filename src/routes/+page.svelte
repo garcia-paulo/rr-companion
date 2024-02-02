@@ -1,4 +1,16 @@
-<script>
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import type { Pokedex } from '$models/pokedex.ts';
+
+	let pokedex: Pokedex;
+
+	onMount(() => {
+		fetch('https://raw.githubusercontent.com/JwowSquared/Radical-Red-Pokedex/master/data.json')
+			.then((response) => response.json())
+			.then((data) => {
+				pokedex = data;
+			});
+	});
 </script>
 
 <header class="container-fluid margin-large">
@@ -16,7 +28,15 @@
 <article>
 	<body>
 		<main class="container">
-			<p>Visit kit.svelte.dev to read the documentation</p>
+			{#if pokedex === undefined}
+				<p aria-busy="true"></p>
+			{:else}
+				<div class="grid">
+					{#each Object.entries(pokedex.species) as specie}
+						<p>{specie[0]}</p>
+					{/each}
+				</div>
+			{/if}
 		</main>
 	</body>
 </article>
